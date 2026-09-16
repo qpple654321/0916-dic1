@@ -1,0 +1,52 @@
+[
+  {
+    "id": "cwa-weather-forecast-app",
+    "title": "台灣氣溫預報 Web App",
+    "category": "Data Analytics",
+    "badge": "Featured",
+    "description": "串接中央氣象署開放資料 API 取得六大區域一週氣溫預報，解析 JSON 後存入 SQLite，再用 Streamlit 做成可互動的折線圖與資料表。原指定資料集下架後改以縣市預報彙整重建，保留自動降級機制。",
+    "techStack": ["Python", "Requests", "SQLite", "Pandas", "Streamlit", "Plotly"],
+    "githubUrl": "https://github.com/qpple654321/cwa-weather-forecast-app",
+    "demoUrl": "#"
+  },
+  {
+    "id": "aiot-personal-portal",
+    "title": "個人入口網站與動態時鐘",
+    "category": "Web Frontend",
+    "badge": "DIC-1",
+    "description": "零依賴的個人入口網站：毫秒級即時時鐘搭配 SVG 進度環、Open-Meteo 即時天氣、以 fetch 非同步載入的專案清單、localStorage 偏好記憶，以及用 Web Audio API 合成的機械錶滴答聲。",
+    "techStack": ["HTML5", "CSS3", "JavaScript ES6+", "Fetch API", "Web Audio API", "GitHub Pages"],
+    "githubUrl": "https://github.com/qpple654321/0916-dic1",
+    "demoUrl": "https://qpple654321.github.io/0916-dic1/"
+  },
+  {
+    "id": "env-sensing-node",
+    "title": "校園環境感測節點",
+    "category": "IoT",
+    "badge": "規劃中",
+    "description": "以 ESP32 搭配溫濕度與 PM2.5 感測器，透過 MQTT 將資料上傳至樹莓派閘道器，建立校園環境的長期觀測資料集，並與氣象署官方觀測值做交叉比對。",
+    "techStack": ["ESP32", "MQTT", "Raspberry Pi", "InfluxDB", "Grafana"],
+    "githubUrl": "#",
+    "demoUrl": "#"
+  },
+  {
+    "id": "edge-vision-inspection",
+    "title": "邊緣端影像辨識實驗",
+    "category": "Edge Computing",
+    "badge": "學習中",
+    "description": "在邊緣裝置上部署輕量化影像辨識模型，比較模型量化前後的推論延遲與準確率變化，理解算力受限環境下的取捨。",
+    "techStack": ["Python", "PyTorch", "OpenCV", "ONNX"],
+    "githubUrl": "#",
+    "demoUrl": "#"
+  },
+  {
+    "id": "opendata-dashboard",
+    "title": "開放資料視覺化練習",
+    "category": "Data Visualization",
+    "badge": "練習",
+    "description": "蒐集政府開放資料平台上的公開資料集，練習資料清理、缺值處理與互動式圖表呈現，作為資料分析基本功的累積。",
+    "techStack": ["Python", "Pandas", "Plotly", "Jupyter"],
+    "githubUrl": "#",
+    "demoUrl": "#"
+  }
+]

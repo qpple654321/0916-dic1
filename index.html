@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>個人入口網站 · 即時時鐘 | AIoT-DA DIC-1</title>
+  <meta name="description" content="AIoT & Data Analytics DIC-1：個人入口網站與動態時鐘儀表板" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏱️</text></svg>" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body data-theme="aurora">
+
+  <!-- 背景：會緩慢飄動的發光色球，純 CSS 動畫 -->
+  <div class="orb orb-1" aria-hidden="true"></div>
+  <div class="orb orb-2" aria-hidden="true"></div>
+  <div class="orb orb-3" aria-hidden="true"></div>
+  <div class="grid-overlay" aria-hidden="true"></div>
+
+  <!-- ===== 頂端工具列 ===== -->
+  <header class="topbar" id="topbar">
+    <div class="status-pill">
+      <span class="dot" aria-hidden="true"></span>
+      <span>Live</span>
+      <span class="sep">·</span>
+      <span id="tzLabel">GMT+8</span>
+    </div>
+
+    <nav class="topbar-controls" aria-label="顯示設定">
+      <button id="soundBtn" class="icon-btn" title="時鐘滴答聲（Web Audio）" aria-pressed="false">
+        <span id="soundIcon">🔇</span>
+      </button>
+      <button id="themeBtn" class="icon-btn" title="切換主題配色">
+        <span>🎨</span>
+      </button>
+      <button id="zenBtn" class="icon-btn" title="Zen 專注模式（快捷鍵 Z）">
+        <span>⛶</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ===== 主畫面：玻璃卡片 ===== -->
+  <main class="stage">
+    <section class="glass-card" id="heroCard">
+
+      <!-- 身分區 -->
+      <div class="identity">
+        <div class="avatar" id="avatar" aria-hidden="true">--</div>
+        <div class="identity-text">
+          <div class="badge-row">
+            <span class="greeting-badge" id="greetingBadge">
+              <span id="greetingIcon">👋</span>
+              <span id="greetingText">Hello</span>
+            </span>
+            <span class="id-badge" title="學號">🎓 5115056032</span>
+          </div>
+          <h1 class="name-row">
+            <span id="userName" contenteditable="true" spellcheck="false"
+                  role="textbox" aria-label="你的名字，可直接點擊編輯">載入中</span>
+            <span class="edit-hint" title="點文字即可編輯">✎</span>
+          </h1>
+          <p id="userTagline" contenteditable="true" spellcheck="false"
+             class="tagline" role="textbox" aria-label="一句話簡介，可直接點擊編輯">載入中</p>
+        </div>
+      </div>
+
+      <!-- 時鐘區 -->
+      <div class="clock-zone">
+        <!-- SVG 進度環：一分鐘走完一圈 -->
+        <svg class="ring" viewBox="0 0 320 320" aria-hidden="true">
+          <circle class="ring-track" cx="160" cy="160" r="150" />
+          <circle class="ring-progress" id="ringProgress" cx="160" cy="160" r="150" />
+        </svg>
+
+        <div class="clock-readout">
+          <div class="time-main">
+            <div class="time-unit">
+              <span class="digits" id="hours">00</span>
+              <span class="unit-label">HOURS</span>
+            </div>
+            <span class="colon">:</span>
+            <div class="time-unit">
+              <span class="digits" id="minutes">00</span>
+              <span class="unit-label">MINUTES</span>
+            </div>
+            <span class="colon">:</span>
+            <div class="time-unit">
+              <span class="digits" id="seconds">00</span>
+              <span class="unit-label">SECONDS</span>
+            </div>
+            <span class="meridiem" id="meridiem" hidden>AM</span>
+          </div>
+
+          <button class="precision" id="formatToggle" title="點一下切換 12 / 24 小時制">
+            <span class="mono">UNIX <b id="unixTime">0</b></span>
+            <span class="divider"></span>
+            <span class="mono"><b id="millis">000</b> ms</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 日期區 -->
+      <div class="date-strip">
+        <p class="full-date" id="fullDate">載入中…</p>
+        <div class="chips">
+          <span class="chip" id="weekChip">Week --</span>
+          <span class="chip" id="doyChip">Day --</span>
+          <span class="chip" id="formatChip">24H</span>
+        </div>
+      </div>
+
+      <!-- 天氣（Open-Meteo，不需金鑰） -->
+      <div class="weather-row">
+        <div class="weather" id="weather">
+          <span class="weather-icon" id="weatherIcon">⏳</span>
+          <span class="weather-temp" id="weatherTemp">--°C</span>
+          <span class="sep">·</span>
+          <span class="weather-desc" id="weatherDesc">讀取天氣中</span>
+        </div>
+        <select id="citySelect" class="city-select" aria-label="選擇城市">
+          <option value="taichung">臺中 Taichung</option>
+          <option value="taipei">臺北 Taipei</option>
+          <option value="hsinchu">新竹 Hsinchu</option>
+          <option value="tainan">臺南 Tainan</option>
+          <option value="kaohsiung">高雄 Kaohsiung</option>
+        </select>
+      </div>
+
+      <!-- 導覽按鈕 -->
+      <nav class="hero-nav" aria-label="內容導覽">
+        <button class="nav-btn" data-tab="projects">📂 Projects</button>
+        <button class="nav-btn" data-tab="about">👤 About</button>
+        <button class="nav-btn" data-tab="connect">🔗 Connect</button>
+      </nav>
+    </section>
+  </main>
+
+  <!-- ===== 抽屜 ===== -->
+  <div class="overlay" id="overlay" hidden></div>
+
+  <aside class="drawer" id="drawer" aria-hidden="true" aria-label="內容面板">
+    <div class="drawer-head">
+      <div class="tabs" role="tablist">
+        <button class="tab" data-tab="projects" role="tab">Projects</button>
+        <button class="tab" data-tab="about" role="tab">About</button>
+        <button class="tab" data-tab="connect" role="tab">Connect</button>
+      </div>
+      <button class="icon-btn" id="drawerClose" title="關閉（ESC）">✕</button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Projects：內容由 app.js 以 fetch('./projects.json') 動態產生 -->
+      <section class="panel" id="panel-projects" role="tabpanel">
+        <div class="project-grid" id="projectGrid">
+          <p class="loading">載入專案中…</p>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section class="panel" id="panel-about" role="tabpanel" hidden>
+        <h2>關於我</h2>
+        <p class="bio">
+          國立中興大學學生，修習「物聯網應用與資料分析（AIoT &amp; Data Analytics）」。
+          對於把感測器資料變成看得懂的圖表這件事特別有興趣，
+          平常會動手做一些從資料擷取、清理到視覺化的小專案。
+        </p>
+
+        <h3>研究與學習興趣</h3>
+        <div class="badges">
+          <span class="badge">人工智慧 AI</span>
+          <span class="badge">物聯網 IoT</span>
+          <span class="badge">邊緣運算 Edge Computing</span>
+          <span class="badge">資料視覺化</span>
+          <span class="badge">開放資料</span>
+        </div>
+
+        <h3>技能</h3>
+        <div class="badges">
+          <span class="badge">Python</span>
+          <span class="badge">JavaScript</span>
+          <span class="badge">HTML / CSS</span>
+          <span class="badge">SQL / SQLite</span>
+          <span class="badge">Pandas</span>
+          <span class="badge">Streamlit</span>
+          <span class="badge">Git / GitHub</span>
+        </div>
+
+        <h3>課程</h3>
+        <ul class="course-list">
+          <li><b>AIoT-DA</b>　物聯網應用與資料分析</li>
+          <li><b>Lecture 2</b>　瀏覽器、現代 Web 核心與非同步資料流</li>
+          <li><b>DIC-1</b>　個人入口網站與動態時鐘儀表板</li>
+          <li><b>學號</b>　5115056032</li>
+        </ul>
+      </section>
+
+      <!-- Connect -->
+      <section class="panel" id="panel-connect" role="tabpanel" hidden>
+        <h2>聯絡方式</h2>
+        <div class="link-list">
+          <a class="link-card" href="https://github.com/qpple654321" target="_blank" rel="noopener">
+            <span class="link-icon">🐙</span>
+            <span class="link-text"><b>GitHub</b><small>@qpple654321</small></span>
+            <span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" href="mailto:w115056032@mail.nchu.edu.tw">
+            <span class="link-icon">✉️</span>
+            <span class="link-text"><b>Email</b><small>w115056032@mail.nchu.edu.tw</small></span>
+            <span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" href="https://lms2020.nchu.edu.tw/" target="_blank" rel="noopener">
+            <span class="link-icon">🎓</span>
+            <span class="link-text"><b>課程平台</b><small>NCHU iLearning 3.0</small></span>
+            <span class="link-arrow">↗</span>
+          </a>
+          <a class="link-card" href="https://github.com/qpple654321/cwa-weather-forecast-app" target="_blank" rel="noopener">
+            <span class="link-icon">🌡️</span>
+            <span class="link-text"><b>氣溫預報 Web App</b><small>CWA API + SQLite + Streamlit</small></span>
+            <span class="link-arrow">↗</span>
+          </a>
+        </div>
+      </section>
+    </div>
+  </aside>
+
+  <!-- Zen 模式的提示 -->
+  <p class="zen-hint" id="zenHint" hidden>按 <kbd>ESC</kbd> 或 <kbd>Z</kbd> 離開 Zen 模式</p>
+
+  <script src="./app.js"></script>
+</body>
+</html>
