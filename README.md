@@ -106,3 +106,7 @@ python3 -m http.server 8777
 ---
 
 參考規格：[huanchen1107/0916-2](https://github.com/huanchen1107/0916-2)（授課教師 Huan Chen 的示範專案）
+
+## 授權
+
+本專案採用 [MIT License](./LICENSE) 開源。
