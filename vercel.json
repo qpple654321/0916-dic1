@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd weather-platform/frontend && npm install && npm run build",
+  "outputDirectory": "weather-platform/frontend/dist",
+  "framework": "vite"
+}
