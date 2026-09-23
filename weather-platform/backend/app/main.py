@@ -14,6 +14,10 @@ async def fetch():
 def num(v):
     try:return float(v)
     except(TypeError,ValueError):return None
+def num(v):
+    try:return float(v)
+    except (TypeError,ValueError):return None
+
 def normalize(raw):
     out=[]
     for s in (raw.get("records") or {}).get("Station") or []:
